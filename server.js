@@ -1,15 +1,6 @@
 'use strict';
-/* enable agent only for dev mode (for profiling)
 
-  usage
-  ================================
-  run kill -SIGUSR2 <the process id of your nodejs app> and access below URL for profiling
-  http://c4milo.github.io/node-webkit-agent/26.0.1410.65/inspector.html?host=localhost:9999&page=0
-  ===================================
-*/
-
-//var agent = require('webkit-devtools-agent');
-
+var memwatch = require('memwatch');
 var http = require('http');
 var staticServer = require('node-static');
 var socketio = require('socket.io');
@@ -86,12 +77,21 @@ websock.configure(function () {
 });
 
 var sendStats = (function () {
-    var timer;
+    var timer,
+        diff = null;
+
     return function () {
         clearTimeout(timer);
         timer = setTimeout(function () {
-            console.log(songServer.getStats());
-            logger.log('info' + songServer.getStats());
+            if (diff === null) {
+                diff = new memwatch.HeapDiff();
+            } else {
+                diff.end();
+                logger.info('heap snapshot', diff);
+                diff = null;
+            }
+
+            logger.log('info', songServer.getStats());
             //websock.sockets.in('users').emit('stats', songServer.getStats());
         }, 3000);
     };
@@ -192,5 +192,18 @@ websock.sockets.on('connection', function (socket) {
     });
 });
 
-logger.info('Server started on port: ' + PORT + ' with pid ' + process.pid);
+
+memwatch.on('leak', function (info) {
+    logger.info('leak', info);
+});
+
+memwatch.on('stats', function (stats) {
+    logger.info('stats', stats);
+});
+
+memwatch.on('leak', function (info) {
+    logger.info('leak', info);
+});
+
+logger.info('Server started on port: %d with pid %d', PORT, process.pid);
 
