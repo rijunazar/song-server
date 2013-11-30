@@ -23,7 +23,7 @@ var parseFiles = function (fileName, callBack) {
         var hash = crypto.createHash('md5').update(fileName).digest('hex');
         console.log(result.picture);
         if (util.isArray(result.picture)) {
-            fs.writeFileSync('public/albumart/' + hash + '.jpg', result.picture[0].data);
+            fs.writeFileSync('albumart/' + hash + '.jpg', result.picture[0].data);
         }
 
         delete result.picture;
