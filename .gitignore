@@ -4,6 +4,7 @@ npm-debug.log
 media
 logs/
 .idea/
-logs/
+logs/eceptions.log
 logs/debug.log
 metaData.json
+albumart
