@@ -1,0 +1,8 @@
+{
+    "songSelectionGap": 5,
+    "maxSongLimitPerIP": 15,
+    "playerClient": "mplayer",
+    "mediaFolder": "/media/",
+    "port": 8085,
+    "adminlist": ["127.0.0.1"]
+}
