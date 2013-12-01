@@ -31,7 +31,10 @@ var SongServer = (function () {
         bindSocketEvents: function () {
             var oThis = this;
 
-            socket = io.connect(null, {query: 'name=' + this.getName()});
+            socket = io.connect(null, {
+                query: 'name=' + this.getName(),
+                "sync disconnect on unload": true
+            });
             socket.on('init', this.onInit.bind(this));
             socket.on('message', this.onMessage, this);
             socket.on('mediaListChange', this.onMediaListChange.bind(this));
